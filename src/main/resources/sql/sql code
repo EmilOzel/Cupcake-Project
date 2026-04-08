@@ -1,0 +1,76 @@
+//Lav først en database der hedder "cupcake" med et lille "c"
+
+CREATE TABLE customers (
+    customer_id SERIAL PRIMARY KEY,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(50) NOT NULL,
+    balance DECIMAL(10,2) DEFAULT 0
+);
+
+
+CREATE TABLE bottoms (
+    bottom_id SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    price DECIMAL(10,2) NOT NULL
+);
+
+
+CREATE TABLE toppings (
+    topping_id SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    price DECIMAL(10,2) NOT NULL
+);
+
+
+
+
+CREATE TABLE orders (
+    order_id SERIAL PRIMARY KEY,
+    customer_id INT REFERENCES customers(customer_id),
+    total_price DECIMAL(10,2)
+);
+
+
+CREATE TABLE order_lines (
+    order_line_id SERIAL PRIMARY KEY,
+    order_id INT REFERENCES orders(order_id),
+    bottom_id INT REFERENCES bottoms(bottom_id),
+    topping_id INT REFERENCES toppings(topping_id),
+    quantity INT NOT NULL
+);
+
+INSERT INTO bottoms (name, price) VALUES
+('Chocolate', 5.00),
+('Vanilla', 5.00),
+('Nutmeg', 5.00),
+('Pistacio', 6.00),
+('Almond', 7.00);
+
+
+INSERT INTO toppings (name, price) VALUES
+('Chocolate', 5.00),
+('Blueberry', 5.00),
+('Rasberry', 5.00),
+('Crispy', 6.00),
+('Strawberry', 6.00),
+('Rum/Raisin', 7.00),
+('Orange', 8.00),
+('Lemon', 8.00),
+('Blue cheese', 9.00);
+
+
+INSERT INTO customers (email, password, balance) VALUES
+('kunde1@mail.dk', '1234', 100.00),
+('kunde2@mail.dk', 'abcd', 50.00);
+
+
+INSERT INTO bottoms (name, price) VALUES
+('Chocolate', 5.00),
+('Vanilla', 5.00),
+('Nutmeg', 5.00),
+('Pistacio', 6.00),
+('Almond', 7.00);
+
+
+
+
