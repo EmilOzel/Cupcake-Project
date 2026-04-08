@@ -1,4 +1,4 @@
-package config;
+package app.config;
 
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
