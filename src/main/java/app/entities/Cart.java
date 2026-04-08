@@ -10,6 +10,12 @@ public class Cart {
         orderLines.add(orderLine);
     }
 
+    public void removeOrderLine(int index) {
+        if (index >= 0 && index < orderLines.size()) {
+            orderLines.remove(index);
+        }
+    }
+
     public List<OrderLine> getOrderLines() {
         return orderLines;
     }

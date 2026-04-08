@@ -40,6 +40,19 @@ public class Main {
             ctx.render("index.html");
         });
 
+        app.post("/remove-from-cart", ctx -> {
+            int index = Integer.parseInt(ctx.formParam("index"));
+
+            Cart cart = ctx.sessionAttribute("cart");
+
+            if (cart != null) {
+                cart.removeOrderLine(index);
+                ctx.sessionAttribute("cart", cart);
+            }
+
+            ctx.redirect("/");
+        });
+
         app.post("/add-to-cart", ctx -> {
             String bottom = ctx.formParam("bottom");
             String topping = ctx.formParam("topping");

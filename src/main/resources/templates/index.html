@@ -32,7 +32,6 @@
     <input type="number" name="quantity" value="1" min="1">
 
     <br><br>
-
     <button type="submit">Læg i kurv</button>
 </form>
 
@@ -41,12 +40,17 @@
 <h2>Indkøbskurv</h2>
 
 <ul>
-    <li th:each="line : ${cart.orderLines}">
+    <li th:each="line, stat : ${cart.orderLines}">
         <span th:text="${line.bottom}"></span>
         +
         <span th:text="${line.topping}"></span>
         x
         <span th:text="${line.quantity}"></span>
+
+        <form action="/remove-from-cart" method="post" style="display:inline;">
+            <input type="hidden" name="index" th:value="${stat.index}">
+            <button type="submit">Fjern</button>
+        </form>
     </li>
 </ul>
 
