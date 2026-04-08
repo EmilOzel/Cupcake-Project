@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cupcake Shop</title>
+</head>
+<body>
+
+<h1>🍰 Cupcake Shop</h1>
+
+<form action="/add-to-cart" method="post">
+
+    <h2>Vælg bund</h2>
+    <select name="bottom">
+        <option>Chocolate</option>
+        <option>Vanilla</option>
+        <option>Nutmeg</option>
+        <option>Pistacio</option>
+        <option>Almond</option>
+    </select>
+
+    <h2>Vælg topping</h2>
+    <select name="topping">
+        <option>Chocolate</option>
+        <option>Blueberry</option>
+        <option>Rasberry</option>
+        <option>Crispy</option>
+        <option>Strawberry</option>
+    </select>
+
+    <h2>Antal</h2>
+    <input type="number" name="quantity" value="1" min="1">
+
+    <br><br>
+
+    <button type="submit">Læg i kurv</button>
+</form>
+
+<hr>
+
+<h2>Indkøbskurv</h2>
+
+<ul>
+    <li th:each="line : ${cart.orderLines}">
+        <span th:text="${line.bottom}"></span>
+        +
+        <span th:text="${line.topping}"></span>
+        x
+        <span th:text="${line.quantity}"></span>
+    </li>
+</ul>
+
+</body>
+</html>
