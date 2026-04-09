@@ -54,5 +54,18 @@
     </li>
 </ul>
 
+<div th:if="${currentUser != null}">
+    Logget ind som:
+    <span th:text="${currentUser.email}"></span>
+    | Saldo:
+    <span th:text="${currentUser.balance}"></span> kr
+    <a href="/logout">Logout</a>
+</div>
+
+<div th:if="${currentUser == null}">
+    <a href="/login">Login</a>
+</div>
+
+
 </body>
 </html>
