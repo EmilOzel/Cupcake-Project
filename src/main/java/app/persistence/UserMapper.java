@@ -38,4 +38,5 @@ public class UserMapper {
             throw new DatabaseException("Databasefejl", e);
         }
     }
+    //"";
 }
