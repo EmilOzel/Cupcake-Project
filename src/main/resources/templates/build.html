@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+<h2>Chocolate bund</h2>
+
+<div class="section">
+
+    <div class="item">
+        <span>Chocolate + Chocolate</span>
+        <form action="/add-to-cart" method="post">
+            <input type="hidden" name="bottom" value="Chocolate">
+            <input type="hidden" name="topping" value="Chocolate">
+            <input type="number" name="quantity" value="1" min="1">
+            <button type="submit">Tilføj</button>
+        </form>
+    </div>
+
+    <div class="item">
+        <span>Chocolate + Blueberry</span>
+        <form action="/add-to-cart" method="post">
+            <input type="hidden" name="bottom" value="Chocolate">
+            <input type="hidden" name="topping" value="Blueberry">
+            <input type="number" name="quantity" value="1" min="1">
+            <button type="submit">Tilføj</button>
+        </form>
+    </div>
+
+    <div class="item">
+        <span>Chocolate + Strawberry</span>
+        <form action="/add-to-cart" method="post">
+            <input type="hidden" name="bottom" value="Chocolate">
+            <input type="hidden" name="topping" value="Strawberry">
+            <input type="number" name="quantity" value="1" min="1">
+            <button type="submit">Tilføj</button>
+        </form>
+    </div>
+
+</div>
+
+</body>
+</html>

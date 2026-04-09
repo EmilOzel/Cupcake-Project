@@ -1,58 +1,174 @@
 <!DOCTYPE html>
-<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Cupcake Shop</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        h1, h2 { color: #c0648a; }
+
+        form.order-form {
+            background: #fff0f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+        }
+
+        select, input[type="number"] {
+            padding: 8px;
+            margin: 5px 0 15px 0;
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button.add-btn {
+            background: #c0648a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button.add-btn:hover { background: #a0486e; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th { background: #fff0f5; color: #c0648a; }
+
+        .qty-form { display: inline; }
+
+        .qty-btn {
+            background: #c0648a;
+            color: white;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .qty-btn:hover { background: #a0486e; }
+
+        .qty-display {
+            display: inline-block;
+            min-width: 30px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .total {
+            text-align: right;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 15px;
+            color: #c0648a;
+        }
+
+        .empty-cart {
+            color: #aaa;
+            font-style: italic;
+        }
+    </style>
 </head>
 <body>
 
-<h1>🍰 Cupcake Shop</h1>
+<h1>🧁 Cupcake Shop</h1>
 
-<form action="/add-to-cart" method="post">
+<!-- BESTILLINGSFORMULAR -->
+<form class="order-form" action="/add-to-cart" method="post">
+    <h2>Byg din cupcake</h2>
 
-    <h2>Vælg bund</h2>
+    <label>Vælg bund:</label>
     <select name="bottom">
-        <option>Chocolate</option>
-        <option>Vanilla</option>
-        <option>Nutmeg</option>
-        <option>Pistacio</option>
-        <option>Almond</option>
+        <option th:each="bottom : ${bottoms}"
+                th:value="${bottom.name}"
+                th:text="${bottom.name + ' (+' + bottom.price + ' kr)'}">
+        </option>
     </select>
 
-    <h2>Vælg topping</h2>
+    <label>Vælg topping:</label>
     <select name="topping">
-        <option>Chocolate</option>
-        <option>Blueberry</option>
-        <option>Rasberry</option>
-        <option>Crispy</option>
-        <option>Strawberry</option>
+        <option th:each="topping : ${toppings}"
+                th:value="${topping.name}"
+                th:text="${topping.name + ' (+' + topping.price + ' kr)'}">
+        </option>
     </select>
 
-    <h2>Antal</h2>
-    <input type="number" name="quantity" value="1" min="1">
+    <label>Antal:</label>
+    <input type="number" name="quantity" value="1" min="1" max="10" />
 
-    <br><br>
-    <button type="submit">Læg i kurv</button>
+    <button class="add-btn" type="submit">Tilføj til kurv</button>
 </form>
 
-<hr>
+<!-- KURV -->
+<h2>🛒 Din kurv</h2>
 
-<h2>Indkøbskurv</h2>
+<div th:if="${#lists.isEmpty(cart.orderLines)}">
+    <p class="empty-cart">Din kurv er tom.</p>
+</div>
 
-<ul>
-    <li th:each="line, stat : ${cart.orderLines}">
-        <span th:text="${line.bottom}"></span>
-        +
-        <span th:text="${line.topping}"></span>
-        x
-        <span th:text="${line.quantity}"></span>
+<div th:if="${not #lists.isEmpty(cart.orderLines)}">
+    <table>
+        <thead>
+        <tr>
+            <th>Bund</th>
+            <th>Topping</th>
+            <th>Pris/stk</th>
+            <th>Antal</th>
+            <th>Subtotal</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="line, iter : ${cart.orderLines}">
+            <td th:text="${line.bottom}"></td>
+            <td th:text="${line.topping}"></td>
+            <td th:text="${line.price + ' kr'}"></td>
+            <td>
+                <!-- Minus knap -->
+                <form class="qty-form" action="/update-quantity" method="post">
+                    <input type="hidden" name="index" th:value="${iter.index}" />
+                    <input type="hidden" name="change" value="-1" />
+                    <button class="qty-btn" type="submit">-</button>
+                </form>
 
-        <form action="/remove-from-cart" method="post" style="display:inline;">
-            <input type="hidden" name="index" th:value="${stat.index}">
-            <button type="submit">Fjern</button>
-        </form>
-    </li>
-</ul>
+                <span class="qty-display" th:text="${line.quantity}"></span>
+
+                <!-- Plus knap -->
+                <form class="qty-form" action="/update-quantity" method="post">
+                    <input type="hidden" name="index" th:value="${iter.index}" />
+                    <input type="hidden" name="change" value="1" />
+                    <button class="qty-btn" type="submit">+</button>
+                </form>
+            </td>
+            <td th:text="${line.price * line.quantity + ' kr'}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- TOTAL -->
+    <div class="total">
+        Total:
+        <span th:text="${cart.total + ' kr'}"></span>
+    </div>
+</div>
 
 </body>
 </html>
