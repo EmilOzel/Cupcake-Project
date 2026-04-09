@@ -3,55 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <title>Checkout</title>
+    <link rel="stylesheet" href="/public/css/styles.css" />
 </head>
 <body>
 
-<h1>🧁 Checkout</h1>
+<nav>
+    <a href="/" style="display: block; line-height: 0; border: none;">
+        <img src="/public/images/olskerlogo.png" alt="Olsker Cupcakes" style="height: 60px; display: block;" />
+    </a>
+    <div>
+        <span th:if="${session.currentUser != null}" style="margin-right:20px;">
+            👤 <span th:text="${session.currentUser.email}"></span>
+            &nbsp;|&nbsp;
+            💰 <span th:text="${session.currentUser.balance + ' kr'}"></span>
+        </span>
+        <a class="nav-btn" th:if="${session.currentUser != null && session.currentUser.admin}" href="/admin" style="margin-right:8px;">Admin</a>
+        <a class="nav-btn" th:if="${session.currentUser != null}" href="/logout">Log ud</a>
+    </div>
+</nav>
 
-<!-- BEKRÆFTELSE efter betaling -->
-<div th:if="${orderId != null}">
-    <h2>✅ Betaling gennemført!</h2>
-    <p>Din ordre ID er: <strong th:text="${orderId}"></strong></p>
-    <p>Beløb trukket: <span th:text="${total + ' kr'}"></span></p>
-    <a href="/">Tilbage til forsiden</a>
+<div class="content">
+
+    <!-- BEKRÆFTELSE efter betaling -->
+    <div th:if="${orderId != null}" class="admin-section" style="text-align:center; padding: 50px;">
+        <div style="font-size: 60px;">✅</div>
+        <h2 style="margin: 20px 0 10px;">Betaling gennemført!</h2>
+        <p style="color: #888; margin-bottom: 10px;">Din ordre ID er: <strong th:text="${orderId}"></strong></p>
+        <p style="color: #888; margin-bottom: 30px;">Beløb trukket: <strong th:text="${total + ' kr'}"></strong></p>
+        <form action="/" method="get">
+            <button class="add-btn" type="submit">Tilbage til forsiden</button>
+        </form>    </div>
+
+    <!-- FEJL -->
+    <p class="error" th:if="${error != null}" th:text="${error}"></p>
+
+    <!-- KURV + BETAL -->
+    <div th:if="${orderId == null}">
+        <h1 style="margin-bottom: 20px;">🧁 Checkout</h1>
+
+        <div class="admin-section">
+            <table>
+                <thead>
+                <tr>
+                    <th>Bund</th>
+                    <th>Topping</th>
+                    <th>Antal</th>
+                    <th>Pris/stk</th>
+                    <th>Subtotal</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="line : ${cart.orderLines}">
+                    <td th:text="${line.bottom}"></td>
+                    <td th:text="${line.topping}"></td>
+                    <td th:text="${line.quantity}"></td>
+                    <td th:text="${line.price + ' kr'}"></td>
+                    <td th:text="${line.price * line.quantity + ' kr'}"></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="total">
+                Total: <span th:text="${cart.total + ' kr'}"></span>
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+            <a href="/build" style="color: #e89ab8;">← Tilbage til kurv</a>
+            <form action="/checkout" method="post">
+                <button class="add-btn" type="submit">Betal nu →</button>
+            </form>
+        </div>
+    </div>
+
 </div>
-
-<!-- FEJL -->
-<div th:if="${error != null}">
-    <p style="color:red;" th:text="${error}"></p>
-</div>
-
-<!-- KURV + BETAL (vises kun hvis ingen bekræftelse endnu) -->
-<div th:if="${orderId == null}">
-    <table>
-        <thead>
-        <tr>
-            <th>Bund</th>
-            <th>Topping</th>
-            <th>Antal</th>
-            <th>Pris/stk</th>
-            <th>Subtotal</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="line : ${cart.orderLines}">
-            <td th:text="${line.bottom}"></td>
-            <td th:text="${line.topping}"></td>
-            <td th:text="${line.quantity}"></td>
-            <td th:text="${line.price + ' kr'}"></td>
-            <td th:text="${line.price * line.quantity + ' kr'}"></td>
-        </tr>
-        </tbody>
-    </table>
-
-    <p><strong>Total: <span th:text="${cart.total + ' kr'}"></span></strong></p>
-
-    <form action="/checkout" method="post">
-        <button type="submit">Betal nu</button>
-    </form>
-
-    <a href="/">Tilbage</a>
-</div>
-
 </body>
 </html>

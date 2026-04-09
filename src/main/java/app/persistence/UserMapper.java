@@ -29,7 +29,7 @@ public class UserMapper {
                 String userPassword = rs.getString("password");
                 double balance = rs.getDouble("balance");
 
-                return new User(id, userEmail, userPassword, balance);
+                return new User(id, userEmail, userPassword, balance, rs.getString("role"));
             } else {
                 throw new DatabaseException("Forkert email eller kodeord");
             }
