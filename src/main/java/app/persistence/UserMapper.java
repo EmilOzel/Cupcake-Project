@@ -38,4 +38,21 @@ public class UserMapper {
             throw new DatabaseException("Databasefejl", e);
         }
     }
+    public static void createUser(String email, String password, ConnectionPool connectionPool) throws DatabaseException {
+        String sql = "INSERT INTO customers (email, password, balance) VALUES (?, ?, 0)";
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setString(1, email);
+            ps.setString(2, password);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            if (e.getMessage().contains("unique") || e.getMessage().contains("duplicate")) {
+                throw new DatabaseException("Email er allerede i brug");
+            }
+            throw new DatabaseException("Databasefejl ved oprettelse", e);
+        }
+    }
 }

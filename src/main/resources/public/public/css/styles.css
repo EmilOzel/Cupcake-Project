@@ -168,3 +168,42 @@ th { background: #fff0f5; color: #e89ab8; }
 
 /* LOGIN SIDE */
 .center { display: flex; justify-content: center; align-items: center; flex: 1; padding: 40px; }
+
+.popup {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.popup-box {
+    background: white;
+    border-radius: 10px;
+    padding: 30px 40px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+.popup-box span { font-size: 40px; }
+
+.popup-box p {
+    color: #555;
+    margin: 15px 0;
+    font-size: 16px;
+}
+
+.popup-box button {
+    background: #e89ab8;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.popup-box button:hover { background: #d4789c; }
