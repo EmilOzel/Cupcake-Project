@@ -15,10 +15,31 @@ import java.util.List;
 public class CupcakeController {
 
     public static void addRoutes(Javalin app, ConnectionPool connectionPool) {
-        app.get("/", ctx -> showIndex(ctx, connectionPool));
+        app.get("/", ctx -> ctx.render("index.html"));
+        app.get("/build", ctx -> showBuild(ctx, connectionPool));
         app.post("/add-to-cart", ctx -> addToCart(ctx, connectionPool));
         app.post("/update-quantity", ctx -> updateQuantity(ctx));
-        app.post("/remove-from-cart", ctx -> removeFromCart(ctx));
+    }
+
+    private static void showBuild(Context ctx, ConnectionPool connectionPool) {
+        // Send til login hvis ikke logget ind
+        if (ctx.sessionAttribute("currentUser") == null) {
+            ctx.redirect("/login");
+            return;
+        }
+
+        List<Bottom> bottoms = BottomMapper.getAllBottoms(connectionPool);
+        List<Topping> toppings = ToppingMapper.getAllToppings(connectionPool);
+        Cart cart = ctx.sessionAttribute("cart");
+        if (cart == null) {
+            cart = new Cart();
+            ctx.sessionAttribute("cart", cart);
+        }
+
+        ctx.attribute("bottoms", bottoms);
+        ctx.attribute("toppings", toppings);
+        ctx.attribute("cart", cart);
+        ctx.render("build.html");
     }
 
     private static void updateQuantity(Context ctx) {
@@ -48,7 +69,7 @@ public class CupcakeController {
         ctx.attribute("bottoms", bottoms);
         ctx.attribute("toppings", toppings);
         ctx.attribute("currentUser", ctx.sessionAttribute("currentUser"));
-        ctx.render("index.html");
+        ctx.render("build.html");
     }
 
     private static void addToCart(Context ctx, ConnectionPool connectionPool) {
