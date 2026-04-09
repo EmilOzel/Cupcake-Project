@@ -17,12 +17,12 @@ public class CupcakeController {
     public static void addRoutes(Javalin app, ConnectionPool connectionPool) {
         app.get("/", ctx -> ctx.render("index.html"));
         app.get("/build", ctx -> showBuild(ctx, connectionPool));
+        app.post("remove-from-cart", ctx -> removeFromCart(ctx));
         app.post("/add-to-cart", ctx -> addToCart(ctx, connectionPool));
         app.post("/update-quantity", ctx -> updateQuantity(ctx));
     }
 
     private static void showBuild(Context ctx, ConnectionPool connectionPool) {
-        // Send til login hvis ikke logget ind
         if (ctx.sessionAttribute("currentUser") == null) {
             ctx.redirect("/login");
             return;
@@ -52,7 +52,7 @@ public class CupcakeController {
             ctx.sessionAttribute("cart", cart);
         }
 
-        ctx.redirect("/");
+        ctx.redirect("/build");
     }
 
     private static void showIndex(Context ctx, ConnectionPool connectionPool) {
@@ -88,7 +88,7 @@ public class CupcakeController {
         double totalPrice = bottom.getPrice() + topping.getPrice();
         cart.addOrderLine(new OrderLine(bottom.getName(), topping.getName(), quantity, totalPrice));
         ctx.sessionAttribute("cart", cart);
-        ctx.redirect("/");
+        ctx.redirect("/build");
     }
 
     private static void removeFromCart(Context ctx) {
@@ -100,6 +100,6 @@ public class CupcakeController {
             ctx.sessionAttribute("cart", cart);
         }
 
-        ctx.redirect("/");
+        ctx.redirect("/build");
     }
 }
