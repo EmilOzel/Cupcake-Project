@@ -2,8 +2,8 @@ package app;
 
 import app.config.SessionConfig;
 import app.config.ThymeleafConfig;
-import app.entities.Cart;
-import app.entities.OrderLine;
+import app.controllers.CupcakeController;
+import app.controllers.UserController;
 import app.persistence.ConnectionPool;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinThymeleaf;
@@ -25,50 +25,10 @@ public class Main {
                     handler -> handler.setSessionHandler(SessionConfig.sessionConfig())
             );
             config.fileRenderer(new JavalinThymeleaf(ThymeleafConfig.templateEngine()));
-            // config.staticFiles.add("/public"); // brug denne hvis du har css
         });
 
-        app.get("/", ctx -> {
-            Cart cart = ctx.sessionAttribute("cart");
-
-            if (cart == null) {
-                cart = new Cart();
-                ctx.sessionAttribute("cart", cart);
-            }
-
-            ctx.attribute("cart", cart);
-            ctx.render("index.html");
-        });
-
-        app.post("/remove-from-cart", ctx -> {
-            int index = Integer.parseInt(ctx.formParam("index"));
-
-            Cart cart = ctx.sessionAttribute("cart");
-
-            if (cart != null) {
-                cart.removeOrderLine(index);
-                ctx.sessionAttribute("cart", cart);
-            }
-
-            ctx.redirect("/");
-        });
-
-        app.post("/add-to-cart", ctx -> {
-            String bottom = ctx.formParam("bottom");
-            String topping = ctx.formParam("topping");
-            int quantity = Integer.parseInt(ctx.formParam("quantity"));
-
-            Cart cart = ctx.sessionAttribute("cart");
-
-            if (cart == null) {
-                cart = new Cart();
-            }
-
-            cart.addOrderLine(new OrderLine(bottom, topping, quantity));
-
-            ctx.sessionAttribute("cart", cart);
-            ctx.redirect("/");
-        });
+        CupcakeController.addRoutes(app, connectionPool);
+        UserController.addRoutes(app, connectionPool);
 
         app.start(7070);
     }
