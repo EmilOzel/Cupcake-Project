@@ -134,6 +134,7 @@
             <th>Pris/stk</th>
             <th>Antal</th>
             <th>Subtotal</th>
+            <th>Fjern</th>
         </tr>
         </thead>
         <tbody>
@@ -142,7 +143,6 @@
             <td th:text="${line.topping}"></td>
             <td th:text="${line.price + ' kr'}"></td>
             <td>
-                <!-- Minus knap -->
                 <form class="qty-form" action="/update-quantity" method="post">
                     <input type="hidden" name="index" th:value="${iter.index}" />
                     <input type="hidden" name="change" value="-1" />
@@ -151,7 +151,6 @@
 
                 <span class="qty-display" th:text="${line.quantity}"></span>
 
-                <!-- Plus knap -->
                 <form class="qty-form" action="/update-quantity" method="post">
                     <input type="hidden" name="index" th:value="${iter.index}" />
                     <input type="hidden" name="change" value="1" />
@@ -159,6 +158,12 @@
                 </form>
             </td>
             <td th:text="${line.price * line.quantity + ' kr'}"></td>
+            <td>
+                <form action="/remove-from-cart" method="post" style="display:inline;">
+                    <input type="hidden" name="index" th:value="${iter.index}" />
+                    <button class="qty-btn" type="submit">X</button>
+                </form>
+            </td>
         </tr>
         </tbody>
     </table>
@@ -181,7 +186,6 @@
 <div th:if="${currentUser == null}">
     <a href="/login">Login</a>
 </div>
-
 
 </body>
 </html>

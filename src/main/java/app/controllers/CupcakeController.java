@@ -17,12 +17,13 @@ public class CupcakeController {
     public static void addRoutes(Javalin app, ConnectionPool connectionPool) {
         app.get("/", ctx -> showIndex(ctx, connectionPool));
         app.post("/add-to-cart", ctx -> addToCart(ctx, connectionPool));
-        app.post("/update-quantity", ctx -> updateQuantity(ctx)); // ny
-
+        app.post("/update-quantity", ctx -> updateQuantity(ctx));
+        app.post("/remove-from-cart", ctx -> removeFromCart(ctx));
     }
+
     private static void updateQuantity(Context ctx) {
         int index = Integer.parseInt(ctx.formParam("index"));
-        int change = Integer.parseInt(ctx.formParam("change")); // +1 eller -1
+        int change = Integer.parseInt(ctx.formParam("change"));
 
         Cart cart = ctx.sessionAttribute("cart");
         if (cart != null) {
@@ -46,6 +47,7 @@ public class CupcakeController {
         ctx.attribute("cart", cart);
         ctx.attribute("bottoms", bottoms);
         ctx.attribute("toppings", toppings);
+        ctx.attribute("currentUser", ctx.sessionAttribute("currentUser"));
         ctx.render("index.html");
     }
 
@@ -54,7 +56,6 @@ public class CupcakeController {
         String toppingName = ctx.formParam("topping");
         int quantity = Integer.parseInt(ctx.formParam("quantity"));
 
-        // Slå priser op fra DB
         Bottom bottom = BottomMapper.getBottomByName(connectionPool, bottomName);
         Topping topping = ToppingMapper.getToppingByName(connectionPool, toppingName);
 
@@ -62,6 +63,7 @@ public class CupcakeController {
         if (cart == null) {
             cart = new Cart();
         }
+
         double totalPrice = bottom.getPrice() + topping.getPrice();
         cart.addOrderLine(new OrderLine(bottom.getName(), topping.getName(), quantity, totalPrice));
         ctx.sessionAttribute("cart", cart);
