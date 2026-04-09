@@ -1,9 +1,10 @@
 package app.controllers;
 
-import app.entities.*;
-import app.exceptions.DatabaseException;
+import app.entities.Bottom;
+import app.entities.Cart;
+import app.entities.OrderLine;
+import app.entities.Topping;
 import app.persistence.BottomMapper;
-import app.persistence.CheckoutMapper;
 import app.persistence.ConnectionPool;
 import app.persistence.ToppingMapper;
 import io.javalin.Javalin;
@@ -14,12 +15,31 @@ import java.util.List;
 public class CupcakeController {
 
     public static void addRoutes(Javalin app, ConnectionPool connectionPool) {
-        app.get("/", ctx -> showIndex(ctx, connectionPool));
+        app.get("/", ctx -> ctx.render("index.html"));
+        app.get("/build", ctx -> showBuild(ctx, connectionPool));
+        app.post("remove-from-cart", ctx -> removeFromCart(ctx));
         app.post("/add-to-cart", ctx -> addToCart(ctx, connectionPool));
         app.post("/update-quantity", ctx -> updateQuantity(ctx));
-        app.post("/remove-from-cart", ctx -> removeFromCart(ctx));
-        app.get("/checkout", ctx -> showCheckout(ctx));
-        app.post("/checkout", ctx -> processCheckout(ctx, connectionPool));
+    }
+
+    private static void showBuild(Context ctx, ConnectionPool connectionPool) {
+        if (ctx.sessionAttribute("currentUser") == null) {
+            ctx.redirect("/login");
+            return;
+        }
+
+        List<Bottom> bottoms = BottomMapper.getAllBottoms(connectionPool);
+        List<Topping> toppings = ToppingMapper.getAllToppings(connectionPool);
+        Cart cart = ctx.sessionAttribute("cart");
+        if (cart == null) {
+            cart = new Cart();
+            ctx.sessionAttribute("cart", cart);
+        }
+
+        ctx.attribute("bottoms", bottoms);
+        ctx.attribute("toppings", toppings);
+        ctx.attribute("cart", cart);
+        ctx.render("build.html");
     }
 
     private static void updateQuantity(Context ctx) {
@@ -32,7 +52,7 @@ public class CupcakeController {
             ctx.sessionAttribute("cart", cart);
         }
 
-        ctx.redirect("/");
+        ctx.redirect("/build");
     }
 
     private static void showIndex(Context ctx, ConnectionPool connectionPool) {
@@ -49,7 +69,7 @@ public class CupcakeController {
         ctx.attribute("bottoms", bottoms);
         ctx.attribute("toppings", toppings);
         ctx.attribute("currentUser", ctx.sessionAttribute("currentUser"));
-        ctx.render("index.html");
+        ctx.render("build.html");
     }
 
     private static void addToCart(Context ctx, ConnectionPool connectionPool) {
@@ -68,7 +88,7 @@ public class CupcakeController {
         double totalPrice = bottom.getPrice() + topping.getPrice();
         cart.addOrderLine(new OrderLine(bottom.getName(), topping.getName(), quantity, totalPrice));
         ctx.sessionAttribute("cart", cart);
-        ctx.redirect("/");
+        ctx.redirect("/build");
     }
 
     private static void removeFromCart(Context ctx) {
@@ -80,41 +100,6 @@ public class CupcakeController {
             ctx.sessionAttribute("cart", cart);
         }
 
-        ctx.redirect("/");
-    }
-    private static void showCheckout(Context ctx) {
-        Cart cart = ctx.sessionAttribute("cart");
-        if (cart == null || cart.getOrderLines().isEmpty()) {
-            ctx.redirect("/");
-            return;
-        }
-        ctx.attribute("cart", cart);
-        ctx.render("checkout.html");
-    }
-
-    private static void processCheckout(Context ctx, ConnectionPool connectionPool) {
-        User currentUser = ctx.sessionAttribute("currentUser");
-        if (currentUser == null) {
-            ctx.redirect("/login");
-            return;
-        }
-
-        Cart cart = ctx.sessionAttribute("cart");
-        if (cart == null || cart.getOrderLines().isEmpty()) {
-            ctx.redirect("/");
-            return;
-        }
-
-        try {
-            int orderId = CheckoutMapper.placeOrder(currentUser.getUserId(), cart, connectionPool);
-            ctx.sessionAttribute("cart", new Cart()); // tøm kurven
-            ctx.attribute("orderId", orderId);
-            ctx.attribute("total", cart.getTotal());
-            ctx.render("checkout.html");
-        } catch (DatabaseException e) {
-            ctx.attribute("cart", cart);
-            ctx.attribute("error", e.getMessage());
-            ctx.render("checkout.html");
-        }
+        ctx.redirect("/build");
     }
 }

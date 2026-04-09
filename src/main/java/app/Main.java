@@ -25,7 +25,9 @@ public class Main {
                     handler -> handler.setSessionHandler(SessionConfig.sessionConfig())
             );
             config.fileRenderer(new JavalinThymeleaf(ThymeleafConfig.templateEngine()));
+            config.staticFiles.add("/public");
         });
+
 
         CupcakeController.addRoutes(app, connectionPool);
         UserController.addRoutes(app, connectionPool);

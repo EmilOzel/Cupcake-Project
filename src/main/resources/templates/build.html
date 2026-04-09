@@ -1,46 +1,109 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="../css/styles.css">
+    <title>Byg din Cupcake</title>
+    <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body>
-<h2>Chocolate bund</h2>
 
-<div class="section">
+<!-- NAVBAR -->
+<nav>
+    <span class="logo">🧁 Cupcake Shop</span>
+    <div>
+        <span th:if="${session.currentUser != null}" style="margin-right:20px;">
+            👤 <span th:text="${session.currentUser.email}"></span>
+            &nbsp;|&nbsp;
+            💰 <span th:text="${session.currentUser.balance + ' kr'}"></span>
+        </span>
+        <a th:if="${session.currentUser != null}" href="/logout">Log ud</a>
+        <a th:if="${session.currentUser == null}" href="/login">Log ind</a>
+    </div>
+</nav>
 
-    <div class="item">
-        <span>Chocolate + Chocolate</span>
-        <form action="/add-to-cart" method="post">
-            <input type="hidden" name="bottom" value="Chocolate">
-            <input type="hidden" name="topping" value="Chocolate">
-            <input type="number" name="quantity" value="1" min="1">
-            <button type="submit">Tilføj</button>
-        </form>
+<div class="content">
+
+    <!-- BESTILLINGSFORMULAR -->
+    <form class="order-form" action="/add-to-cart" method="post">
+        <h2>Byg din cupcake</h2>
+
+        <label>Vælg bund:</label>
+        <select name="bottom">
+            <option th:each="bottom : ${bottoms}"
+                    th:value="${bottom.name}"
+                    th:text="${bottom.name + ' (+' + bottom.price + ' kr)'}">
+            </option>
+        </select>
+
+        <label>Vælg topping:</label>
+        <select name="topping">
+            <option th:each="topping : ${toppings}"
+                    th:value="${topping.name}"
+                    th:text="${topping.name + ' (+' + topping.price + ' kr)'}">
+            </option>
+        </select>
+
+        <label>Antal:</label>
+        <input type="number" name="quantity" value="1" min="1" max="10" />
+
+        <button class="add-btn" type="submit">Tilføj til kurv</button>
+    </form>
+
+    <!-- KURV -->
+    <h2>🛒 Din kurv</h2>
+
+    <div th:if="${#lists.isEmpty(cart.orderLines)}">
+        <p class="empty-cart">Din kurv er tom.</p>
     </div>
 
-    <div class="item">
-        <span>Chocolate + Blueberry</span>
-        <form action="/add-to-cart" method="post">
-            <input type="hidden" name="bottom" value="Chocolate">
-            <input type="hidden" name="topping" value="Blueberry">
-            <input type="number" name="quantity" value="1" min="1">
-            <button type="submit">Tilføj</button>
-        </form>
-    </div>
+    <div th:if="${not #lists.isEmpty(cart.orderLines)}">
+        <table>
+            <thead>
+            <tr>
+                <th>Bund</th>
+                <th>Topping</th>
+                <th>Pris/stk</th>
+                <th>Antal</th>
+                <th>Subtotal</th>
+                <th>Fjern</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="line, iter : ${cart.orderLines}">
+                <td th:text="${line.bottom}"></td>
+                <td th:text="${line.topping}"></td>
+                <td th:text="${line.price + ' kr'}"></td>
+                <td>
+                    <form class="qty-form" action="/update-quantity" method="post">
+                        <input type="hidden" name="index" th:value="${iter.index}" />
+                        <input type="hidden" name="change" value="-1" />
+                        <button class="qty-btn" type="submit">-</button>
+                    </form>
 
-    <div class="item">
-        <span>Chocolate + Strawberry</span>
-        <form action="/add-to-cart" method="post">
-            <input type="hidden" name="bottom" value="Chocolate">
-            <input type="hidden" name="topping" value="Strawberry">
-            <input type="number" name="quantity" value="1" min="1">
-            <button type="submit">Tilføj</button>
-        </form>
+                    <span class="qty-display" th:text="${line.quantity}"></span>
+
+                    <form class="qty-form" action="/update-quantity" method="post">
+                        <input type="hidden" name="index" th:value="${iter.index}" />
+                        <input type="hidden" name="change" value="1" />
+                        <button class="qty-btn" type="submit">+</button>
+                    </form>
+                </td>
+                <td th:text="${line.price * line.quantity + ' kr'}"></td>
+                <td>
+                    <form action="/remove-from-cart" method="post" style="display:inline;">
+                        <input type="hidden" name="index" th:value="${iter.index}" />
+                        <button class="qty-btn" type="submit">✕</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="total">
+            Total: <span th:text="${cart.total + ' kr'}"></span>
+        </div>
     </div>
 
 </div>
-
 </body>
 </html>

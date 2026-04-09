@@ -1,22 +1,32 @@
 <!DOCTYPE html>
-<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>Login</title>
+    <meta charset="UTF-8">
+    <title>Log ind</title>
+    <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body>
 
-<h1>Login</h1>
+<nav>
+    <span class="logo">🧁 Cupcake Shop</span>
+</nav>
 
-<form action="/login" method="post">
-  <input type="email" name="email" placeholder="Email" required>
-  <input type="password" name="password" placeholder="Kodeord" required>
-  <button type="submit">Login</button>
-</form>
-
-<p th:if="${message}" th:text="${message}"></p>
-
-<a href="/">Tilbage til forsiden</a>
+<div class="center">
+    <div class="card">
+        <h2>Log ind</h2>
+        <p class="error" th:if="${message}" th:text="${message}"></p>
+        <form action="/login" method="post">
+            <label>Email</label>
+            <input type="email" name="email" placeholder="din@email.dk" required />
+            <label>Adgangskode</label>
+            <input type="password" name="password" placeholder="••••••••" required />
+            <button type="submit">Log ind</button>
+        </form>
+        <div class="register-link">
+            Har du ikke en konto? <a href="/register">Opret konto</a>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>
