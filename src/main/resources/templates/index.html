@@ -4,187 +4,193 @@
     <meta charset="UTF-8">
     <title>Cupcake Shop</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 0 20px;
+            background: #fff5f8;
+            min-height: 100vh;
         }
 
-        h1, h2 { color: #c0648a; }
-
-        form.order-form {
-            background: #fff0f5;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 40px;
-        }
-
-        select, input[type="number"] {
-            padding: 8px;
-            margin: 5px 0 15px 0;
-            width: 100%;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        button.add-btn {
+        /* NAVBAR */
+        nav {
             background: #c0648a;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav .logo {
             color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        button.add-btn:hover { background: #a0486e; }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th { background: #fff0f5; color: #c0648a; }
-
-        .qty-form { display: inline; }
-
-        .qty-btn {
-            background: #c0648a;
-            color: white;
-            border: none;
-            padding: 4px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .qty-btn:hover { background: #a0486e; }
-
-        .qty-display {
-            display: inline-block;
-            min-width: 30px;
-            text-align: center;
+            font-size: 24px;
             font-weight: bold;
         }
 
-        .total {
-            text-align: right;
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 15px;
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 8px 16px;
+            border: 2px solid white;
+            border-radius: 4px;
+        }
+
+        nav a:hover {
+            background: white;
             color: #c0648a;
         }
 
-        .empty-cart {
-            color: #aaa;
-            font-style: italic;
+        /* HERO */
+        .hero {
+            text-align: center;
+            padding: 80px 20px 60px;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            color: #c0648a;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: #888;
+            margin-bottom: 40px;
+        }
+
+        .hero a.build-btn {
+            background: #c0648a;
+            color: white;
+            text-decoration: none;
+            padding: 14px 32px;
+            border-radius: 6px;
+            font-size: 18px;
+        }
+
+        .hero a.build-btn:hover {
+            background: #a0486e;
+        }
+
+        /* LOGIN / REGISTER SEKTION */
+        .auth-section {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            padding: 40px 20px 80px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            width: 340px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .card h2 {
+            color: #c0648a;
+            margin-bottom: 20px;
+        }
+
+        .card label {
+            display: block;
+            color: #555;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .card input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 15px;
+        }
+
+        .card input:focus {
+            outline: none;
+            border-color: #c0648a;
+        }
+
+        .card button {
+            width: 100%;
+            padding: 12px;
+            background: #c0648a;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .card button:hover {
+            background: #a0486e;
+        }
+
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
 
-<h1>🧁 Cupcake Shop</h1>
-
-<!-- BESTILLINGSFORMULAR -->
-<form class="order-form" action="/add-to-cart" method="post">
-    <h2>Byg din cupcake</h2>
-
-    <label>Vælg bund:</label>
-    <select name="bottom">
-        <option th:each="bottom : ${bottoms}"
-                th:value="${bottom.name}"
-                th:text="${bottom.name + ' (+' + bottom.price + ' kr)'}">
-        </option>
-    </select>
-
-    <label>Vælg topping:</label>
-    <select name="topping">
-        <option th:each="topping : ${toppings}"
-                th:value="${topping.name}"
-                th:text="${topping.name + ' (+' + topping.price + ' kr)'}">
-        </option>
-    </select>
-
-    <label>Antal:</label>
-    <input type="number" name="quantity" value="1" min="1" max="10" />
-
-    <button class="add-btn" type="submit">Tilføj til kurv</button>
-</form>
-
-<!-- KURV -->
-<h2>🛒 Din kurv</h2>
-
-<div th:if="${#lists.isEmpty(cart.orderLines)}">
-    <p class="empty-cart">Din kurv er tom.</p>
-</div>
-
-<div th:if="${not #lists.isEmpty(cart.orderLines)}">
-    <table>
-        <thead>
-        <tr>
-            <th>Bund</th>
-            <th>Topping</th>
-            <th>Pris/stk</th>
-            <th>Antal</th>
-            <th>Subtotal</th>
-            <th>Fjern</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="line, iter : ${cart.orderLines}">
-            <td th:text="${line.bottom}"></td>
-            <td th:text="${line.topping}"></td>
-            <td th:text="${line.price + ' kr'}"></td>
-            <td>
-                <form class="qty-form" action="/update-quantity" method="post">
-                    <input type="hidden" name="index" th:value="${iter.index}" />
-                    <input type="hidden" name="change" value="-1" />
-                    <button class="qty-btn" type="submit">-</button>
-                </form>
-
-                <span class="qty-display" th:text="${line.quantity}"></span>
-
-                <form class="qty-form" action="/update-quantity" method="post">
-                    <input type="hidden" name="index" th:value="${iter.index}" />
-                    <input type="hidden" name="change" value="1" />
-                    <button class="qty-btn" type="submit">+</button>
-                </form>
-            </td>
-            <td th:text="${line.price * line.quantity + ' kr'}"></td>
-            <td>
-                <form action="/remove-from-cart" method="post" style="display:inline;">
-                    <input type="hidden" name="index" th:value="${iter.index}" />
-                    <button class="qty-btn" type="submit">X</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-
-    <!-- TOTAL -->
-    <div class="total">
-        Total:
-        <span th:text="${cart.total + ' kr'}"></span>
+<!-- NAVBAR -->
+<nav>
+    <span class="logo">🧁 Cupcake Shop</span>
+    <div>
+        <span th:if="${session.currentUser == null}">
+            <a href="/login">Log ind</a>
+        </span>
+        <span th:if="${session.currentUser != null}" style="color:white; margin-right:20px;">
+            👤 <span th:text="${session.currentUser.email}"></span>
+            &nbsp;|&nbsp;
+            💰 <span th:text="${session.currentUser.balance + ' kr'}"></span>
+        </span>
+        <a th:if="${session.currentUser != null}" href="/logout">Log ud</a>
     </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+    <h1>Velkommen til Cupcake Shop</h1>
+    <p>Byg din egen cupcake med de lækreste bunde og toppings</p>
+    <a class="build-btn" href="/build">Byg din cupcake nu →</a>
 </div>
 
-<div th:if="${currentUser != null}">
-    Logget ind som:
-    <span th:text="${currentUser.email}"></span>
-    | Saldo:
-    <span th:text="${currentUser.balance}"></span> kr
-    <a href="/logout">Logout</a>
-</div>
+<!-- LOGIN OG REGISTRER — vises KUN hvis ikke logget ind -->
+<div class="auth-section" th:if="${session.currentUser == null}">
+    <div class="card">
+        <h2>Log ind</h2>
+        <p class="error" th:if="${loginError}" th:text="${loginError}"></p>
+        <form action="/login" method="post">
+            <label>Email</label>
+            <input type="email" name="email" placeholder="din@email.dk" required />
+            <label>Adgangskode</label>
+            <input type="password" name="password" placeholder="••••••••" required />
+            <button type="submit">Log ind</button>
+        </form>
+    </div>
 
-<div th:if="${currentUser == null}">
-    <a href="/login">Login</a>
+    <div class="card">
+        <h2>Opret konto</h2>
+        <p class="error" th:if="${registerError}" th:text="${registerError}"></p>
+        <form action="/register" method="post">
+            <label>Email</label>
+            <input type="email" name="email" placeholder="din@email.dk" required />
+            <label>Adgangskode</label>
+            <input type="password" name="password" placeholder="••••••••" required />
+            <button type="submit">Opret konto</button>
+        </form>
+    </div>
 </div>
 
 </body>
