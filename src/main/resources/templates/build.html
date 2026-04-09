@@ -3,21 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>Byg din Cupcake</title>
-    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="/public/css/styles.css" />
 </head>
 <body>
 
 <!-- NAVBAR -->
 <nav>
-    <span class="logo">🧁 Cupcake Shop</span>
+    <!-- VENSTRE: logo -->
+    <a href="/" style="display: block; line-height: 0; border: none;">
+        <img src="/public/images/olskerlogo.png" alt="Olsker Cupcakes" style="height: 60px; display: block;" />
+    </a>
+    <!-- HØJRE: login/bruger info -->
     <div>
+        <span th:if="${session.currentUser == null}">
+            <a href="/login">Log ind</a>
+        </span>
         <span th:if="${session.currentUser != null}" style="margin-right:20px;">
             👤 <span th:text="${session.currentUser.email}"></span>
             &nbsp;|&nbsp;
             💰 <span th:text="${session.currentUser.balance + ' kr'}"></span>
         </span>
         <a th:if="${session.currentUser != null}" href="/logout">Log ud</a>
-        <a th:if="${session.currentUser == null}" href="/login">Log ind</a>
     </div>
 </nav>
 
