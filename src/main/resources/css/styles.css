@@ -1,0 +1,135 @@
+/* styles.css */
+
+/* Generelle body-styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #fff0f5; /* lyserød baggrund */
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+/* Overskrifter */
+h1 {
+    color: #ff69b4; /* stærk lyserød */
+    text-align: center;
+    margin-top: 20px;
+}
+
+h2 {
+    color: #ff1493; /* mørkere lyserød */
+    margin-bottom: 10px;
+}
+
+/* Formular */
+form {
+    background-color: #ffe4f1; /* lys lyserød baggrund */
+    padding: 20px;
+    margin: 20px auto;
+    width: 300px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+select, input[type="number"], button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ffb6c1;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+button {
+    background-color: #ff69b4;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #ff1493;
+}
+
+/* Indkøbskurv */
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 20px auto;
+    max-width: 300px;
+}
+
+ul li {
+    background-color: #fff0f5;
+    border: 1px solid #ffb6c1;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+/* Offscreen menu til kurv */
+#cart-menu {
+    position: fixed;
+    top: 0;
+    right: -350px; /* skjult til højre */
+    width: 300px;
+    height: 100%;
+    background-color: #ffe4f1;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+    padding: 20px;
+    transition: right 0.3s ease;
+    z-index: 1000;
+}
+
+#cart-menu.active {
+    right: 0; /* vises */
+}
+
+#cart-menu h2 {
+    margin-top: 0;
+}
+
+#cart-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #ff69b4;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1100;
+}
+
+#cart-toggle:hover {
+    background-color: #ff1493;
+}
+.section {
+    background-color: #ffe4f1;
+    margin: 20px auto;
+    padding: 15px;
+    border-radius: 10px;
+    max-width: 400px;
+}
+
+.item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+}
+
+.item form {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.item input {
+    width: 60px;
+}
