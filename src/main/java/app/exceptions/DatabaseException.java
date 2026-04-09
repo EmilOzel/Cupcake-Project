@@ -20,5 +20,6 @@ public class DatabaseException extends Exception
     public DatabaseException(String databasefejl, SQLException e) {
         super(databasefejl, e);
         System.out.println("databasefejl: " + databasefejl);
+        System.out.println("SQL fejl: " + e.getMessage());
     }
 }

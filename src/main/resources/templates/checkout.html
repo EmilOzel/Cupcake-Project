@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout</title>
+</head>
+<body>
+
+<h1>🧁 Checkout</h1>
+
+<!-- BEKRÆFTELSE efter betaling -->
+<div th:if="${orderId != null}">
+    <h2>✅ Betaling gennemført!</h2>
+    <p>Din ordre ID er: <strong th:text="${orderId}"></strong></p>
+    <p>Beløb trukket: <span th:text="${total + ' kr'}"></span></p>
+    <a href="/">Tilbage til forsiden</a>
+</div>
+
+<!-- FEJL -->
+<div th:if="${error != null}">
+    <p style="color:red;" th:text="${error}"></p>
+</div>
+
+<!-- KURV + BETAL (vises kun hvis ingen bekræftelse endnu) -->
+<div th:if="${orderId == null}">
+    <table>
+        <thead>
+        <tr>
+            <th>Bund</th>
+            <th>Topping</th>
+            <th>Antal</th>
+            <th>Pris/stk</th>
+            <th>Subtotal</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="line : ${cart.orderLines}">
+            <td th:text="${line.bottom}"></td>
+            <td th:text="${line.topping}"></td>
+            <td th:text="${line.quantity}"></td>
+            <td th:text="${line.price + ' kr'}"></td>
+            <td th:text="${line.price * line.quantity + ' kr'}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p><strong>Total: <span th:text="${cart.total + ' kr'}"></span></strong></p>
+
+    <form action="/checkout" method="post">
+        <button type="submit">Betal nu</button>
+    </form>
+
+    <a href="/">Tilbage</a>
+</div>
+
+</body>
+</html>

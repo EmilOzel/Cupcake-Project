@@ -1,10 +1,9 @@
 package app.controllers;
 
-import app.entities.Bottom;
-import app.entities.Cart;
-import app.entities.OrderLine;
-import app.entities.Topping;
+import app.entities.*;
+import app.exceptions.DatabaseException;
 import app.persistence.BottomMapper;
+import app.persistence.CheckoutMapper;
 import app.persistence.ConnectionPool;
 import app.persistence.ToppingMapper;
 import io.javalin.Javalin;
@@ -19,6 +18,8 @@ public class CupcakeController {
         app.post("/add-to-cart", ctx -> addToCart(ctx, connectionPool));
         app.post("/update-quantity", ctx -> updateQuantity(ctx));
         app.post("/remove-from-cart", ctx -> removeFromCart(ctx));
+        app.get("/checkout", ctx -> showCheckout(ctx));
+        app.post("/checkout", ctx -> processCheckout(ctx, connectionPool));
     }
 
     private static void updateQuantity(Context ctx) {
@@ -80,5 +81,40 @@ public class CupcakeController {
         }
 
         ctx.redirect("/");
+    }
+    private static void showCheckout(Context ctx) {
+        Cart cart = ctx.sessionAttribute("cart");
+        if (cart == null || cart.getOrderLines().isEmpty()) {
+            ctx.redirect("/");
+            return;
+        }
+        ctx.attribute("cart", cart);
+        ctx.render("checkout.html");
+    }
+
+    private static void processCheckout(Context ctx, ConnectionPool connectionPool) {
+        User currentUser = ctx.sessionAttribute("currentUser");
+        if (currentUser == null) {
+            ctx.redirect("/login");
+            return;
+        }
+
+        Cart cart = ctx.sessionAttribute("cart");
+        if (cart == null || cart.getOrderLines().isEmpty()) {
+            ctx.redirect("/");
+            return;
+        }
+
+        try {
+            int orderId = CheckoutMapper.placeOrder(currentUser.getUserId(), cart, connectionPool);
+            ctx.sessionAttribute("cart", new Cart()); // tøm kurven
+            ctx.attribute("orderId", orderId);
+            ctx.attribute("total", cart.getTotal());
+            ctx.render("checkout.html");
+        } catch (DatabaseException e) {
+            ctx.attribute("cart", cart);
+            ctx.attribute("error", e.getMessage());
+            ctx.render("checkout.html");
+        }
     }
 }
