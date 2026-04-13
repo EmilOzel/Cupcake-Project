@@ -4,7 +4,10 @@ import app.entities.Cart;
 import app.entities.OrderLine;
 import app.exceptions.DatabaseException;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class CheckoutMapper {
 
@@ -20,16 +23,19 @@ public class CheckoutMapper {
                 ?)
             """;
 
-        try (Connection conn = connectionPool.getConnection()) {
-            conn.setAutoCommit(false); // Start transaktion
+        Connection conn = null;
+
+        try {
+            conn = connectionPool.getConnection();
+            conn.setAutoCommit(false);
 
             double total = cart.getTotal();
 
-            // 1. Træk beløb fra saldo
             try (PreparedStatement ps = conn.prepareStatement(deductBalance)) {
                 ps.setDouble(1, total);
                 ps.setInt(2, customerId);
                 ps.setDouble(3, total);
+
                 int rows = ps.executeUpdate();
                 if (rows == 0) {
                     conn.rollback();
@@ -37,17 +43,16 @@ public class CheckoutMapper {
                 }
             }
 
-            // 2. Opret ordre
             int orderId;
             try (PreparedStatement ps = conn.prepareStatement(insertOrder)) {
                 ps.setInt(1, customerId);
                 ps.setDouble(2, total);
+
                 ResultSet rs = ps.executeQuery();
                 rs.next();
                 orderId = rs.getInt("order_id");
             }
 
-            // 3. Indsæt order lines
             try (PreparedStatement ps = conn.prepareStatement(insertOrderLine)) {
                 for (OrderLine line : cart.getOrderLines()) {
                     ps.setInt(1, orderId);
@@ -63,7 +68,22 @@ public class CheckoutMapper {
             return orderId;
 
         } catch (SQLException e) {
+            try {
+                if (conn != null) {
+                    conn.rollback();
+                }
+            } catch (SQLException ignored) {
+            }
             throw new DatabaseException("Fejl under betaling", e);
+
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                }
+            } catch (SQLException ignored) {
+            }
         }
     }
 }

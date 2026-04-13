@@ -15,9 +15,27 @@ public class User {
         this.role = role;
     }
 
-    public int getUserId() { return userId; }
-    public String getEmail() { return email; }
-    public double getBalance() { return balance; }
-    public String getRole() { return role; }
-    public boolean isAdmin() { return "admin".equals(role); }
+    public int getUserId() {
+        return userId;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public boolean isAdmin() {
+        return "admin".equals(role);
+    }
 }
