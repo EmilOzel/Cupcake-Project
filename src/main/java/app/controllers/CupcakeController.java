@@ -2,10 +2,7 @@ package app.controllers;
 
 import app.entities.*;
 import app.exceptions.DatabaseException;
-import app.persistence.BottomMapper;
-import app.persistence.CheckoutMapper;
-import app.persistence.ConnectionPool;
-import app.persistence.ToppingMapper;
+import app.persistence.*;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
@@ -21,6 +18,8 @@ public class CupcakeController {
         app.post("/update-quantity", ctx -> updateQuantity(ctx));
         app.get("/checkout", ctx -> showCheckout(ctx));
         app.post("/checkout", ctx -> processCheckout(ctx, connectionPool));
+        app.get("/my-orders", ctx -> showMyOrders(ctx, connectionPool));
+        app.get("/my-orders/{orderId}", ctx -> showMyOrderDetails(ctx, connectionPool));
     }
 
     private static void showBuild(Context ctx, ConnectionPool connectionPool) {
@@ -137,6 +136,32 @@ public class CupcakeController {
             ctx.attribute("cart", cart);
             ctx.attribute("error", e.getMessage());
             ctx.render("checkout.html");
+        }
+    }
+    private static void showMyOrders(Context ctx, ConnectionPool connectionPool) {
+        User user = ctx.sessionAttribute("currentUser");
+        if (user == null) { ctx.redirect("/login"); return; }
+
+        try {
+            ctx.attribute("orders", OrderMapper.getOrdersByUser(user.getUserId(), connectionPool));
+            ctx.render("my-orders.html");
+        } catch (DatabaseException e) {
+            ctx.attribute("error", e.getMessage());
+            ctx.render("my-orders.html");
+        }
+    }
+
+    private static void showMyOrderDetails(Context ctx, ConnectionPool connectionPool) {
+        User user = ctx.sessionAttribute("currentUser");
+        if (user == null) { ctx.redirect("/login"); return; }
+
+        try {
+            int orderId = Integer.parseInt(ctx.pathParam("orderId"));
+            ctx.attribute("orderLines", OrderMapper.getOrderLines(orderId, connectionPool));
+            ctx.attribute("orderId", orderId);
+            ctx.render("order-details.html");
+        } catch (DatabaseException e) {
+            ctx.redirect("/my-orders");
         }
     }
 }

@@ -7,14 +7,15 @@
 </head>
 <body>
 
-<!-- NAVBAR -->
 <nav>
     <!-- VENSTRE: logo -->
     <a href="/" style="display: block; line-height: 0; border: none;">
-    <img src="/public/images/olskerlogo.png" alt="Olsker Cupcakes" style="height: 60px; display: block;" />
+        <img src="/public/images/olskerlogo.png" alt="Olsker Cupcakes" style="height: 60px; display: block;" />
     </a>
-    <!-- HØJRE: login/bruger info -->
+
+    <!-- HØJRE: brugerinfo + admin + logout -->
     <div>
+        <a class="nav-btn" th:if="${session.currentUser != null}" href="/my-orders" style="margin-right:8px;">Mine ordrer</a>
         <span th:if="${session.currentUser == null}">
             <a class="nav-btn" href="/login">Log ind</a>
         </span>
@@ -23,6 +24,7 @@
             &nbsp;|&nbsp;
             💰 <span th:text="${session.currentUser.balance + ' kr'}"></span>
         </span>
+        <a class="nav-btn" th:if="${session.currentUser != null && session.currentUser.admin}" href="/admin" style="margin-right:8px;">Admin</a>
         <a class="nav-btn" th:if="${session.currentUser != null}" href="/logout">Log ud</a>
     </div>
 </nav>

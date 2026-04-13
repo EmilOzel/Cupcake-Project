@@ -2,37 +2,33 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Log ind</title>
+    <title>Opret konto</title>
     <link rel="stylesheet" href="/public/css/styles.css" />
 </head>
 <body>
-<div class="popup" th:if="${successMessage != null}">
-    <div class="popup-box">
-        <span>✅</span>
-        <p th:text="${successMessage}"></p>
-        <button onclick="this.parentElement.parentElement.style.display='none'">Luk</button>
-    </div>
-</div>
 
 <nav>
     <a href="/" style="display: block; line-height: 0; border: none;">
         <img src="/public/images/olskerlogo.png" alt="Olsker Cupcakes" style="height: 60px; display: block;" />
     </a>
+    <div>
+        <a class="nav-btn" href="/login">Log ind</a>
+    </div>
 </nav>
 
 <div class="center">
     <div class="card">
-        <h2>Log ind</h2>
-        <p class="error" th:if="${message}" th:text="${message}"></p>
-        <form action="/login" method="post">
+        <h2>Opret konto</h2>
+        <p class="error" th:if="${registerError}" th:text="${registerError}"></p>
+        <form action="/register" method="post">
             <label>Email</label>
             <input type="email" name="email" placeholder="din@email.dk" required />
             <label>Adgangskode</label>
             <input type="password" name="password" placeholder="••••••••" required />
-            <button type="submit">Log ind</button>
+            <button type="submit">Opret konto</button>
         </form>
         <div class="register-link">
-            Har du ikke en konto? <a href="/register">Opret konto</a>
+            Har du allerede en konto? <a href="/login">Log ind</a>
         </div>
     </div>
 </div>

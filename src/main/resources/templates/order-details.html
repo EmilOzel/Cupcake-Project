@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ordre detaljer</title>
+    <link rel="stylesheet" href="/public/css/styles.css" />
+</head>
+<body>
+
+<nav>
+    <a href="/" style="display: block; line-height: 0; border: none;">
+        <img src="/public/images/olskerlogo.png" alt="Olsker Cupcakes" style="height: 60px; display: block;" />
+    </a>
+    <div>
+        <span style="margin-right:20px;">
+            👤 <span th:text="${session.currentUser.email}"></span>
+        </span>
+        <a class="nav-btn" href="/admin" style="margin-right:8px;">Admin</a>
+        <a class="nav-btn" href="/logout">Log ud</a>
+    </div>
+</nav>
+
+<div class="content">
+    <h1>Ordre #<span th:text="${orderId}"></span></h1>
+
+    <div class="admin-section">
+        <table>
+            <thead>
+            <tr>
+                <th>Bund</th>
+                <th>Topping</th>
+                <th>Antal</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="line : ${orderLines}">
+                <td th:text="${line[0]}"></td>
+                <td th:text="${line[1]}"></td>
+                <td th:text="${line[2]}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <form th:if="${session.currentUser.admin}" action="/admin" method="get">
+        <button class="add-btn" type="submit">← Tilbage til admin</button>
+    </form>
+    <form th:if="${not session.currentUser.admin}" action="/my-orders" method="get">
+        <button class="add-btn" type="submit">← Tilbage til mine ordrer</button>
+    </form>
+</body>
+</html>
