@@ -141,7 +141,6 @@ public class CupcakeController {
 
             int orderId = CheckoutMapper.placeOrder(user.getUserId(), cart, cp);
 
-            // 🔥 OPDATER USER (DET DU MANGLEDE)
             User updatedUser = UserMapper.getUserById(user.getUserId(), cp);
             ctx.sessionAttribute("currentUser", updatedUser);
 
