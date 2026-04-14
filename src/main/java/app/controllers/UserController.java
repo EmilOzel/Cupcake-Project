@@ -33,4 +33,22 @@ public class UserController {
             ctx.render("login.html");
         }
     }
+
+    private static void register(Context ctx, ConnectionPool connectionPool) {
+        String email = ctx.formParam("email");
+        String password = ctx.formParam("password");
+
+        try {
+            User user = UserMapper.register(email, password, connectionPool);
+
+            ctx.sessionAttribute("currentUser", user);
+
+            ctx.redirect("/");
+        } catch (DatabaseException e) {
+            ctx.attribute("message", e.getMessage());
+            ctx.render("register.html");
+        }
+    }
+    //SDD
+
 }
