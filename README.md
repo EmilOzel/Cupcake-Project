@@ -11,7 +11,7 @@ Gruppe F
 
 
 Video-demo (2–3 min):
-[Indsæt link til YouTube / Panopto / Zoom video her]
+https://drive.google.com/file/d/1PDARhyqS7rFYRa7FFv4AhUMFH6puR0q1/view?usp=sharing
 
 Rapport:
 https://docs.google.com/document/d/1aDJy6kmP69k9YUZ9B35q5qwoAw_JaEwPi0A0umvpu7I/edit?tab=t.0#heading=h.6nzdcirtywlx
