@@ -11,7 +11,14 @@ public class UserController {
 
     public static void addRoutes(Javalin app, ConnectionPool connectionPool) {
 
-        app.get("/login", ctx -> ctx.render("login.html"));
+        app.get("/login", ctx -> {
+            String success = ctx.sessionAttribute("successMessage");
+            if (success != null) {
+                ctx.attribute("successMessage", success);
+                ctx.sessionAttribute("successMessage", null);
+            }
+            ctx.render("login.html");
+        });
 
         app.post("/login", ctx -> {
             try {
@@ -44,7 +51,7 @@ public class UserController {
                         ctx.formParam("password"),
                         connectionPool
                 );
-
+                ctx.sessionAttribute("successMessage", "Konto oprettet! Du kan nu logge ind.");
                 ctx.redirect("/login");
 
             } catch (DatabaseException e) {

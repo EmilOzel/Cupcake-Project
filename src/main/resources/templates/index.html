@@ -20,9 +20,9 @@
             <a class="nav-btn" href="/login">Log ind</a>
         </span>
         <span th:if="${session.currentUser != null}" style="margin-right:20px;">
-            👤 <span th:text="${session.currentUser.email}"></span>
+             <span th:text="${session.currentUser.email}"></span>
             &nbsp;|&nbsp;
-            💰 <span th:text="${session.currentUser.balance + ' kr'}"></span>
+             <span th:text="${session.currentUser.balance + ' kr'}"></span>
         </span>
         <a class="nav-btn" th:if="${session.currentUser != null && session.currentUser.admin}" href="/admin" style="margin-right:8px;">Admin</a>
         <a class="nav-btn" th:if="${session.currentUser != null}" href="/logout">Log ud</a>
