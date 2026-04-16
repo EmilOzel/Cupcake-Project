@@ -1,3 +1,5 @@
+Gruppe F
+
 ## Deltagere
 
 | Navn | CPH-email | GitHub-navn | Hold |
