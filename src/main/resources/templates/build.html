@@ -8,12 +8,10 @@
 <body>
 
 <nav>
-    <!-- VENSTRE: logo -->
     <a href="/" style="display: block; line-height: 0; border: none;">
         <img src="/public/images/olskerlogo.png" alt="Olsker Cupcakes" style="height: 60px; display: block;" />
     </a>
 
-    <!-- HØJRE: brugerinfo + admin + logout -->
     <div>
         <a class="nav-btn" th:if="${session.currentUser != null}" href="/my-orders" style="margin-right:8px;">Mine ordrer</a>
         <span th:if="${session.currentUser == null}">
@@ -31,7 +29,6 @@
 
 <div class="content">
 
-    <!-- BESTILLINGSFORMULAR -->
     <form class="order-form" action="/add-to-cart" method="post">
         <h2>Byg din cupcake</h2>
 
@@ -57,7 +54,6 @@
         <button class="add-btn" type="submit">Tilføj til kurv</button>
     </form>
 
-    <!-- KURV -->
     <h2>🛒 Din kurv</h2>
 
     <div th:if="${#lists.isEmpty(cart.orderLines)}">

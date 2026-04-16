@@ -8,12 +8,10 @@
 <body>
 
 <nav>
-    <!-- VENSTRE: logo -->
     <a href="/" style="display: block; line-height: 0; border: none;">
         <img src="/public/images/olskerlogo.png" alt="Olsker Cupcakes" style="height: 60px; display: block;" />
     </a>
 
-    <!-- HØJRE: brugerinfo + admin + logout -->
     <div>
         <a class="nav-btn" th:if="${session.currentUser != null}" href="/my-orders" style="margin-right:8px;">Mine ordrer</a>
         <span th:if="${session.currentUser == null}">
@@ -32,14 +30,12 @@
     <img src="/public/images/cupcakelogo.png" alt="Olsker Cupcakes" />
 </div>
 
-<!-- HERO -->
 <div class="hero">
     <h1>Velkommen til Cupcake Shop</h1>
     <p>Byg din egen cupcake med de lækreste bunde og toppings</p>
     <a class="build-btn" href="/build">Byg din cupcake nu →</a>
 </div>
 
-<!-- LOGIN OG REGISTRER — vises KUN hvis ikke logget ind -->
 <div class="auth-section" th:if="${session.currentUser == null}">
     <div class="card">
         <h2>Log ind</h2>

@@ -8,7 +8,6 @@
 <body>
 <div class="popup" th:if="${successMessage != null}">
     <div class="popup-box">
-        <span>✅</span>
         <p th:text="${successMessage}"></p>
         <button onclick="this.parentElement.parentElement.style.display='none'">Luk</button>
     </div>

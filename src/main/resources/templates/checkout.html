@@ -24,9 +24,8 @@
 
 <div class="content">
 
-    <!-- BEKRÆFTELSE efter betaling -->
     <div th:if="${orderId != null}" class="admin-section" style="text-align:center; padding: 50px;">
-        <div style="font-size: 60px;">✅</div>
+        <div style="font-size: 60px;"></div>
         <h2 style="margin: 20px 0 10px;">Betaling gennemført!</h2>
         <p style="color: #888; margin-bottom: 10px;">Din ordre ID er: <strong th:text="${orderId}"></strong></p>
         <p style="color: #888; margin-bottom: 30px;">Beløb trukket: <strong th:text="${total + ' kr'}"></strong></p>
@@ -34,10 +33,8 @@
             <button class="add-btn" type="submit">Tilbage til forsiden</button>
         </form>    </div>
 
-    <!-- FEJL -->
     <p class="error" th:if="${error != null}" th:text="${error}"></p>
 
-    <!-- KURV + BETAL -->
     <div th:if="${orderId == null}">
         <h1 style="margin-bottom: 20px;">🧁 Checkout</h1>
 
