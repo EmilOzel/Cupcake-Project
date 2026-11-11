@@ -2,10 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Mine ordrer</title>
     <link rel="stylesheet" href="/public/css/styles.css" />
 </head>
 <body>
+<p th:if="${demoMode}" style="text-align:center;padding:10px;margin:0;background:#f8e5ee;color:#4c2637;">Studieprojekt · Demobutik med fiktive køb. Nye konti får 100 demokroner.</p>
 
 <nav>
     <a href="/" style="display: block; line-height: 0; border: none;">

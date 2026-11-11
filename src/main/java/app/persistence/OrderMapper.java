@@ -36,6 +36,20 @@ public class OrderMapper {
         return orders;
     }
 
+    public static List<Object[]> getOrderLinesForUser(int orderId, int userId, ConnectionPool pool) throws DatabaseException {
+        try (Connection conn = pool.getConnection();
+             PreparedStatement ps = conn.prepareStatement("SELECT 1 FROM orders WHERE order_id = ? AND customer_id = ?")) {
+            ps.setInt(1, orderId);
+            ps.setInt(2, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) throw new DatabaseException("Ordren findes ikke");
+            }
+        } catch (SQLException error) {
+            throw new DatabaseException("Kunne ikke hente ordren", error);
+        }
+        return getOrderLines(orderId, pool);
+    }
+
     public static List<Object[]> getOrderLines(int orderId, ConnectionPool connectionPool) throws DatabaseException {
         List<Object[]> lines = new ArrayList<>();
         String sql = """

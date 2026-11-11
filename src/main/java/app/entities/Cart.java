@@ -18,6 +18,7 @@ public class Cart {
 
     // Ny metode — +1 eller -1, og fjerner hvis quantity rammer 0
     public void updateQuantity(int index, int change) {
+        if (change != -1 && change != 1) throw new IllegalArgumentException("Ugyldig ændring");
         if (index >= 0 && index < orderLines.size()) {
             OrderLine line = orderLines.get(index);
             int newQty = line.getQuantity() + change;

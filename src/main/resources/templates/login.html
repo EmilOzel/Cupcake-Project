@@ -2,10 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Log ind</title>
     <link rel="stylesheet" href="/public/css/styles.css" />
 </head>
 <body>
+<p th:if="${demoMode}" style="text-align:center;padding:10px;margin:0;background:#f8e5ee;color:#4c2637;">Studieprojekt · Demobutik med fiktive køb. Nye konti får 100 demokroner.</p>
 <div class="popup" th:if="${successMessage != null}">
     <div class="popup-box">
         <p th:text="${successMessage}"></p>
@@ -22,7 +24,7 @@
 <div class="center">
     <div class="card">
         <h2>Log ind</h2>
-        <p class="error" th:if="${message}" th:text="${message}"></p>
+        <p class="error" th:if="${error}" th:text="${error}"></p>
         <form action="/login" method="post">
             <label>Email</label>
             <input type="email" name="email" placeholder="din@email.dk" required />

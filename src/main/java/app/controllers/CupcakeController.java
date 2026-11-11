@@ -67,6 +67,8 @@ public class CupcakeController {
         Bottom b = BottomMapper.getBottomByName(cp, bottom);
         Topping t = ToppingMapper.getToppingByName(cp, topping);
 
+        if (b == null || t == null) throw new IllegalArgumentException("Ugyldigt produkt");
+
         Cart cart = ctx.sessionAttribute("cart");
         if (cart == null) cart = new Cart();
 
@@ -184,7 +186,7 @@ public class CupcakeController {
 
         try {
             int orderId = Integer.parseInt(ctx.pathParam("orderId"));
-            ctx.attribute("orderLines", OrderMapper.getOrderLines(orderId, connectionPool));
+            ctx.attribute("orderLines", OrderMapper.getOrderLinesForUser(orderId, user.getUserId(), connectionPool));
             ctx.attribute("orderId", orderId);
             ctx.render("order-details.html");
         } catch (DatabaseException e) {

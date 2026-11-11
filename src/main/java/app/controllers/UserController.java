@@ -28,6 +28,8 @@ public class UserController {
                         connectionPool
                 );
 
+                ctx.req().changeSessionId();
+                ctx.sessionAttribute("cart", null);
                 ctx.sessionAttribute("currentUser", user);
                 ctx.redirect("/build");
 

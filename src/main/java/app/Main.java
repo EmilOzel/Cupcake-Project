@@ -27,8 +27,27 @@ public class Main {
             );
             config.fileRenderer(new JavalinThymeleaf(ThymeleafConfig.templateEngine()));
             config.staticFiles.add("/public");
+            config.http.maxRequestSize = 32_768;
         });
 
+
+        app.before(ctx -> {
+            String origin = System.getenv("SERVER_ORIGIN");
+            ctx.attribute("demoMode", "true".equals(System.getenv("DEMO_MODE")));
+            ctx.header("X-Content-Type-Options", "nosniff");
+            ctx.header("X-Frame-Options", "DENY");
+            if (ctx.method().name().equals("POST")) {
+                if (origin != null && !origin.equals(ctx.header("Origin"))) {
+                    throw new io.javalin.http.ForbiddenResponse("Ugyldig afsender");
+                }
+                if (!ctx.path().equals("/login") && !ctx.path().equals("/register")
+                        && ctx.sessionAttribute("currentUser") == null) {
+                    throw new io.javalin.http.UnauthorizedResponse("Log ind først");
+                }
+            }
+        });
+        app.exception(IllegalArgumentException.class, (error, ctx) ->
+                ctx.status(400).result("Ugyldige oplysninger. Gå tilbage og prøv igen."));
 
         CupcakeController.addRoutes(app, connectionPool);
         UserController.addRoutes(app, connectionPool);

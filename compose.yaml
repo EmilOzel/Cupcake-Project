@@ -1,0 +1,31 @@
+name: cupcake
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    mem_limit: 192m
+    environment:
+      DEPLOYED: "true"
+      JDBC_USER: cupcake
+      JDBC_PASSWORD: ${CUPCAKE_DB_PASSWORD:?Set CUPCAKE_DB_PASSWORD}
+      JDBC_CONNECTION_STRING: jdbc:postgresql://carport-db-1:5432/%s?currentSchema=public
+      JDBC_DB: cupcake
+      SERVER_ORIGIN: https://cupcake.antwi.dk
+      DEMO_MODE: "true"
+    networks:
+      database:
+      proxy:
+        aliases:
+          - cupcake-app
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+networks:
+  database:
+    external: true
+    name: carport_default
+  proxy:
+    external: true
+    name: cit_default
